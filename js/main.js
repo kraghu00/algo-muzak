@@ -101,3 +101,10 @@ for (var i = 0; i < notes.length*4; i++) {
   const pitch = step(root, notes[i])
   tone('square', 440, time, dur)
 }
+
+for (var i = 0; i < notes.length; i++) {
+  const time = i*beat + delayStart + beat*72
+  const dur = beat
+  const pitch = step(root, notes[i])
+  tone('sawtooth', 440, time, dur)
+}
