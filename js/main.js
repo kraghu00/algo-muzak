@@ -9,7 +9,7 @@ function tone(type, pitch, time, duration) {
     type: type || 'sine',
     frequency: pitch || 440
   })
-  const lvl = new GainNode(ctx, { gain: 0 })
+  const lvl = new GainNode(ctx, { gain: 0.001 })
   osc.connect(lvl)
   lvl.connect(ctx.destination)
   lvl.connect(fft)
@@ -88,23 +88,30 @@ for (var b = 0; b < 4; b++) {
   }
 }
 
-for (var i = 0; i < notes.length*4; i++) {
+for (var i = 0; i < notes.length*4 + beat*(Math.random()*5); i++) {
   const time = i*beat + delayStart
   const dur = beat/2
   const pitch = step(root, notes[i])
   tone('triangle', 440, time, dur)
 }
 
-for (var i = 0; i < notes.length*4; i++) {
-  const time = i*beat/2 + delayStart
+for (var i = 0; i < notes.length*7 + beat*(Math.random()*5); i++) {
+  const time = i*beat/2 + delayStart + Math.random()/2
   const dur = beat/4
   const pitch = step(root, notes[i])
   tone('square', 440, time, dur)
 }
 
 for (var i = 0; i < notes.length; i++) {
-  const time = i*beat + delayStart + beat*84
+  const time = i*beat + delayStart + beat*83
   const dur = beat
   const pitch = step(root, notes[i])
   tone('sawtooth', 440, time, dur)
+}
+
+for (var i = 0; i < notes.length*8; i++) {
+  const time = i*beat/2 + delayStart
+  const dur = beat/4
+  const pitch = step(root, notes[i])
+  tone('square', 220, time, dur)
 }
