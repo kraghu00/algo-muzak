@@ -14,13 +14,17 @@ function tone(type, pitch, time, duration) {
   lvl.connect(ctx.destination)
   lvl.connect(fft)
   osc.start(t)
-  osc.stop(t + 4)
-  adsr({ param: lvl.gain, duration: dur})
+  osc.stop(t + dur)
+  adsr({
+    param: lvl.gain,
+    time: t,
+    duration: dur
+  })
 }
 function adsr (opts) {
   const param = opts.param
-  const peak = opts.peak || 0.5
-  const hold = opts.peak || 0.4
+  const peak = opts.peak || 0.2
+  const hold = opts.peak || 0.1
   const time = opts.time || ctx.currentTime
   const dur = opts.duration || 1
   const a = opts.attack || 0.2 * dur
@@ -40,16 +44,60 @@ function step (rootFreq, steps) {
   let rnd = rootFreq * Math.pow(tr2, steps)
   return Math.round(rnd * 100) /100
 }
+function r (scale) {
+  return Math.floor(Math.random()*scale.length)
+}
 
 const major = [0, 2, 4, 5, 7, 9, 11, 12]
 const minor = [0, 2, 3, 5, 7, 8, 10, 12]
 
-tone('sine')
+// A:0, A#:1, B:2, C:3, C#:4, D:5, D#:6,
+// E:7, F:8, F#:9, G:10, G#:11, A:12
 
+const delayStart = 0.5
+const tempo = 140 * 2
+const beat = 60 / tempo
+const bar = beat * 5
+const root = 880
+const pattern = [0, 5, 7, 12]
+const scale = pattern
+const notes = [
+  0, 5, 7, 12,
+  0, 5, 7, 12,
+  0, 5, 7, 12,
+  0, 5, 7, 12,
+  0, 5, 7, 12,
+  0, 5, 7, 12
+]
 
-// for (let i = 0; i < 16; i++) {
-//   let time = ctx.currentTime + (i / 4)
-//   let n = Math.floor(Math.random()*major.length)
-//   const pitch = step(440, n)
-//   tone('sine', pitch, time, 0.25)
-// }
+for (var b = 0; b < 4; b++) {
+  const delayB = b * bar * 4
+  for (let a = 0; a < 4; a++) {
+    const delayA = a * bar
+    notes[5] = r(minor)
+    notes[6] = r(minor)
+    notes[7] = r(major)
+    notes[9] = r(major)
+    notes[11] = r(pattern)
+    for (var i = 0; i < notes.length; i++) {
+      const time = i*beat + delayStart + delayA + delayB
+      const dur = beat
+      const pitch = step(root, notes[i])
+      tone('sawtooth', pitch, time, dur)
+    }
+  }
+}
+
+for (var i = 0; i < notes.length*4; i++) {
+  const time = i*beat + delayStart
+  const dur = beat/2
+  const pitch = step(root, notes[i])
+  tone('triangle', 440, time, dur)
+}
+
+for (var i = 0; i < notes.length*4; i++) {
+  const time = i*beat/2 + delayStart
+  const dur = beat/4
+  const pitch = step(root, notes[i])
+  tone('square', 440, time, dur)
+}
