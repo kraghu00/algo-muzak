@@ -1,6 +1,7 @@
 # algoMuzak
 
 for (let i = birth; i < death; i++) {
-  let chaos = order 
+  let chaos = order
 }
 
+return peace
